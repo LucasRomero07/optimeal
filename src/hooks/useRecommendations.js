@@ -1,7 +1,8 @@
 import recipesDB from "../data/recipes";
 
-export function getMealRecommendations(pantry, maxCookTime = 0) {
+export function getMealRecommendations(pantry, maxCookTime = 0, favoriteIngredients = []) {
   const pantryLower = pantry.map((i) => i.toLowerCase().trim());
+  const favoritesLower = favoriteIngredients.map((i) => i.toLowerCase().trim());
 
   const scored = recipesDB
     .filter((recipe) => {
@@ -50,6 +51,14 @@ export function getMealRecommendations(pantry, maxCookTime = 0) {
             score -= 1;
             details.push({ ingredient: ideal, status: "missing" });
           }
+        }
+      }
+
+      // Bonus points for recipes that include favorite ingredients
+      const recipeIngredientsLower = uniqueIngredients.map((i) => i.toLowerCase());
+      for (const fav of favoritesLower) {
+        if (recipeIngredientsLower.includes(fav)) {
+          score += 2;
         }
       }
 

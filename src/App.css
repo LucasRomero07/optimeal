@@ -32,6 +32,7 @@ body {
 /* ---------- Header ---------- */
 .header {
   text-align: center;
+  position: relative;
 }
 
 .header h1 {
@@ -161,6 +162,55 @@ body {
   border-bottom: 2px solid rgba(210, 105, 30, 0.2);
 }
 
+.cat-title--btn {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 2px solid rgba(210, 105, 30, 0.2);
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 2px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #d2691e;
+  transition: opacity 0.15s;
+}
+
+.cat-title--btn:active {
+  opacity: 0.7;
+  transform: none;
+}
+
+.cat-title-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cat-count {
+  background: #d2691e;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 1px 8px;
+  line-height: 1.6;
+}
+
+.cat-chevron {
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.cat-chevron--open {
+  transform: rotate(90deg);
+}
+
 /* ---------- Ingredient Grid ---------- */
 .ingredient-grid {
   display: flex;
@@ -265,6 +315,8 @@ body {
   border-radius: 30px;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
 }
 
 .card-img {
@@ -279,12 +331,17 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
 }
 
 .card-title {
   font-size: 1.2rem;
   color: #d2691e;
   font-weight: 700;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-time {
@@ -327,7 +384,7 @@ body {
 
 /* ---------- Card Actions ---------- */
 .card-actions {
-  margin-top: 8px;
+  margin-top: auto;
 }
 
 .card-actions .btn {
@@ -395,6 +452,357 @@ body {
 
 .omit-btn {
   margin: 8px 20px 0;
+}
+
+/* ---------- Card image wrapper + fav star button ---------- */
+.card-img-wrapper {
+  position: relative;
+}
+
+.btn-fav-recipe {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.18);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+  backdrop-filter: blur(2px);
+}
+
+.btn-fav-recipe:active {
+  transform: scale(0.88);
+}
+
+.btn-fav-recipe--on {
+  background: rgba(255, 221, 0, 0.2);
+  color: #5a4a00;
+}
+
+/* ---------- Favorite recipe card ---------- */
+.card--fav {
+  border: 2px solid #FFDD00;
+  box-shadow: 0 6px 24px rgba(255, 221, 0, 0.35);
+  background: #fffee8;
+}
+
+.card--fav .card-title {
+  color: #5a4a00;
+}
+
+.card--fav .card-score {
+  color: #5a4a00;
+}
+
+.card--fav .card-time {
+  color: #5a4a00;
+  opacity: 1;
+}
+
+.card--fav .card-img {
+  opacity: 0.95;
+}
+
+/* ---------- Ver Receta button golden variant ---------- */
+.btn-primary--fav {
+  background: #FFDD00;
+  color: #5a4a00;
+  border: none;
+  box-shadow: 0 4px 14px rgba(255, 221, 0, 0.5);
+}
+
+/* ---------- Header icon buttons (settings, history) ---------- */
+.btn-header-icon {
+  position: absolute;
+  top: 0;
+  background: rgba(210, 105, 30, 0.12);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: #d2691e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.btn-header-icon--right {
+  right: 0;
+}
+
+.btn-header-icon--left {
+  left: 0;
+}
+
+.btn-header-icon:hover {
+  background: rgba(210, 105, 30, 0.2);
+}
+
+.btn-header-icon:active {
+  transform: scale(0.92);
+}
+
+/* ---------- Settings Button (legacy alias) ---------- */
+.btn-settings {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(210, 105, 30, 0.12);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: #d2691e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.btn-settings:hover {
+  background: rgba(210, 105, 30, 0.1);
+}
+
+.btn-settings:active {
+  transform: scale(0.92);
+}
+
+/* ---------- Favorite grid item ---------- */
+.grid-item--fav {
+  border-color: #e8950a;
+  box-shadow: 0 2px 8px rgba(232, 149, 10, 0.25);
+}
+
+.grid-item--on.grid-item--fav {
+  background: #e8950a;
+  border-color: #e8950a;
+}
+
+.grid-fav-badge {
+  font-size: 0.65rem;
+  margin-left: 3px;
+  line-height: 1;
+}
+
+/* ---------- Recipe card favorite badge ---------- */
+.card-fav-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #fff3cc;
+  color: #a06c00;
+  border: 1px solid #f0c840;
+  border-radius: 20px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+/* ---------- Preferences View ---------- */
+.pref-legend {
+  background: #fff;
+  border-radius: 20px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.pref-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: #8b4513;
+  line-height: 1.4;
+}
+
+.pref-legend-badge {
+  font-size: 1rem;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.pref-legend-badge--fav {
+  background: #fff3cc;
+}
+
+.pref-legend-badge--blocked {
+  background: #f0f0f0;
+}
+
+/* ---------- Preference List ---------- */
+.pref-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pref-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 10px 14px;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.15s, background 0.15s, opacity 0.15s;
+}
+
+.pref-item--fav {
+  border-color: #f0c840;
+  background: #fffbf0;
+}
+
+.pref-item--blocked {
+  border-color: #e0e0e0;
+  background: #f8f8f8;
+  opacity: 0.55;
+}
+
+.pref-emoji {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.pref-name {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #8b4513;
+  font-weight: 500;
+}
+
+.pref-toggles {
+  display: flex;
+  gap: 6px;
+}
+
+.pref-toggle {
+  background: transparent;
+  border: 2px solid #e8d5c4;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+  opacity: 0.35;
+}
+
+.pref-toggle:active {
+  transform: scale(0.9);
+}
+
+.pref-toggle--fav.pref-toggle--active {
+  border-color: #f0c840;
+  background: #fff3cc;
+  opacity: 1;
+}
+
+.pref-toggle--blocked.pref-toggle--active {
+  border-color: #ccc;
+  background: #efefef;
+  opacity: 1;
+}
+
+/* ---------- History View ---------- */
+.history-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 12px 14px;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.15s, background 0.15s;
+  cursor: pointer;
+}
+
+.history-item:active {
+  transform: scale(0.98);
+}
+
+.history-item--fav {
+  border-color: #FFDD00;
+  background: #fffee8;
+}
+
+.history-emoji {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  width: 32px;
+  text-align: center;
+}
+
+.history-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.history-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #d2691e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-item--fav .history-title {
+  color: #8a7200;
+}
+
+.history-time {
+  font-size: 0.8rem;
+  color: #8b4513;
+  opacity: 0.7;
+}
+
+.history-date {
+  font-size: 0.75rem;
+  color: #8b4513;
+  opacity: 0.5;
 }
 
 /* ---------- Responsive : PC ---------- */
