@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getEmoji, getCategories } from "../data/ingredients";
+import { isAllowedByDiet } from "../data/diets";
 
 const TIME_OPTIONS = [
   { label: "Sin límite", value: 0 },
@@ -17,6 +18,8 @@ export default function PantrySelector({
   maxCookTime,
   setMaxCookTime,
   onHungry,
+  onProfile,
+  profile,
 }) {
   const [search, setSearch] = useState("");
 
@@ -30,16 +33,36 @@ export default function PantrySelector({
 
   const q = search.toLowerCase();
 
+  const dietId = profile?.diet || "omnivore";
+
+  useEffect(() => {
+    if (dietId !== "omnivore") {
+      const cleaned = pantry.filter((i) => isAllowedByDiet(i, dietId));
+      if (cleaned.length !== pantry.length) {
+        setPantry(cleaned);
+      }
+    }
+  }, [dietId]);
+
   const filteredCategories = CATEGORIES.map((cat) => ({
     ...cat,
-    items: cat.items.filter((i) => i.includes(q)),
+    items: cat.items.filter(
+      (i) =>
+        i.includes(q) &&
+        (dietId === "omnivore" || isAllowedByDiet(i, dietId))
+    ),
   })).filter((cat) => cat.items.length > 0);
 
   return (
     <div className="view pantry-view">
       <header className="header">
-        <h1>🥘 OptiMeal</h1>
-        <p className="subtitle">Toca los ingredientes que tienes</p>
+        <div className="header-row">
+          <h1>🥘 OptiMeal</h1>
+          <button className="btn-profile" onClick={onProfile} title="Mi Perfil">
+            ⚙️
+          </button>
+        </div>
+        <p className="subtitle">Hola {profile?.name} 👋 — toca los ingredientes que tienes</p>
       </header>
 
       <button

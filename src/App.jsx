@@ -1,23 +1,28 @@
 import { useState, useMemo } from "react";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import { useUserProfile } from "./hooks/useUserProfile";
 import { getMealRecommendations } from "./hooks/useRecommendations";
 import PantrySelector from "./components/PantrySelector";
 import RecipeList from "./components/RecipeList";
 import RecipeDetail from "./components/RecipeDetail";
+import LoginScreen from "./components/LoginScreen";
+import ProfileSettings from "./components/ProfileSettings";
 import "./App.css";
 
 const DEFAULT_PANTRY = ["pasta", "tomate", "carne picada", "cebolla", "sal"];
 
 export default function App() {
+  const [profile, setProfile] = useUserProfile();
   const [pantry, setPantry] = useLocalStorage("optimeal_pantry", DEFAULT_PANTRY);
-  const [view, setView] = useState("pantry");
+  const [view, setView] = useState(profile.name ? "pantry" : "login");
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [omittedIds, setOmittedIds] = useLocalStorage("optimeal_omitted", []);
   const [maxCookTime, setMaxCookTime] = useLocalStorage("optimeal_maxCookTime", 0);
+  const [ratings, setRatings] = useLocalStorage("optimeal_ratings", {});
 
   const recommendations = useMemo(
-    () => getMealRecommendations(pantry, maxCookTime),
-    [pantry, maxCookTime]
+    () => getMealRecommendations(pantry, maxCookTime, profile),
+    [pantry, maxCookTime, profile]
   );
 
   const visibleRecipes = useMemo(
@@ -39,6 +44,8 @@ export default function App() {
     if (view === "detail") {
       setView("results");
       setSelectedRecipe(null);
+    } else if (view === "profile") {
+      setView("pantry");
     } else {
       setView("pantry");
     }
@@ -52,12 +59,33 @@ export default function App() {
     setSelectedRecipe(null);
   };
 
+  const handleRate = (id, vote) => {
+    setRatings({ ...ratings, [id]: vote });
+  };
+
+  const handleLogin = () => {
+    setView("pantry");
+  };
+
+  if (view === "login") {
+    return (
+      <LoginScreen profile={profile} setProfile={setProfile} onStart={handleLogin} />
+    );
+  }
+
+  if (view === "profile") {
+    return (
+      <ProfileSettings profile={profile} setProfile={setProfile} onClose={handleGoBack} />
+    );
+  }
+
   if (view === "results") {
     return (
       <RecipeList
         recommendations={visibleRecipes}
         onViewDetail={handleViewDetail}
         onGoBack={handleGoBack}
+        ratings={ratings}
       />
     );
   }
@@ -68,6 +96,8 @@ export default function App() {
         recipe={selectedRecipe}
         onGoBack={handleGoBack}
         onOmit={handleOmit}
+        onRate={handleRate}
+        rating={ratings[selectedRecipe?.id]}
       />
     );
   }
@@ -79,6 +109,8 @@ export default function App() {
       maxCookTime={maxCookTime}
       setMaxCookTime={setMaxCookTime}
       onHungry={handleHungry}
+      onProfile={() => setView("profile")}
+      profile={profile}
     />
   );
 }

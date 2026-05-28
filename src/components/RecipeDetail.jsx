@@ -1,6 +1,6 @@
 import { getEmoji } from "../data/ingredients";
 
-export default function RecipeDetail({ recipe, onGoBack, onOmit }) {
+export default function RecipeDetail({ recipe, onGoBack, onOmit, onRate, rating }) {
   if (!recipe) return null;
 
   const handleOmit = () => {
@@ -64,6 +64,24 @@ export default function RecipeDetail({ recipe, onGoBack, onOmit }) {
               );
             })}
           </ul>
+        </div>
+
+        <div className="rating-section">
+          <p className="rating-label">¿Te sirvió esta receta?</p>
+          <div className="rating-buttons">
+            <button
+              className={`btn btn-rate ${rating === "like" ? "active" : ""}`}
+              onClick={() => onRate(recipe.id, rating === "like" ? null : "like")}
+            >
+              👍 Sí, me gustó
+            </button>
+            <button
+              className={`btn btn-rate ${rating === "dislike" ? "active" : ""}`}
+              onClick={() => onRate(recipe.id, rating === "dislike" ? null : "dislike")}
+            >
+              👎 No me gustó
+            </button>
+          </div>
         </div>
 
         <button className="btn btn-secondary omit-btn" onClick={handleOmit}>
