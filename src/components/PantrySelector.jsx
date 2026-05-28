@@ -19,9 +19,14 @@ export default function PantrySelector({
   setMaxCookTime,
   onHungry,
   onProfile,
+  onOpenSettings,
+  onOpenHistory,
   profile,
+  blockedIngredients = [],
+  favoriteIngredients = [],
 }) {
   const [search, setSearch] = useState("");
+  const [openCats, setOpenCats] = useState(new Set());
 
   const toggleIngredient = (name) => {
     if (pantry.includes(name)) {
@@ -31,8 +36,16 @@ export default function PantrySelector({
     }
   };
 
-  const q = search.toLowerCase();
+  const toggleCat = (name) => {
+    setOpenCats((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
+  };
 
+  const q = search.toLowerCase();
   const dietId = profile?.diet || "omnivore";
 
   useEffect(() => {
@@ -49,20 +62,24 @@ export default function PantrySelector({
     items: cat.items.filter(
       (i) =>
         i.includes(q) &&
-        (dietId === "omnivore" || isAllowedByDiet(i, dietId))
+        (dietId === "omnivore" || isAllowedByDiet(i, dietId)) &&
+        !blockedIngredients.includes(i)
     ),
   })).filter((cat) => cat.items.length > 0);
+
+  const isCatOpen = (name) => q.length > 0 || openCats.has(name);
 
   return (
     <div className="view pantry-view">
       <header className="header">
-        <div className="header-row">
-          <h1>🥘 OptiMeal</h1>
-          <button className="btn-profile" onClick={onProfile} title="Mi Perfil">
-            ⚙️
-          </button>
-        </div>
+        <h1>🥘 OptiMeal</h1>
         <p className="subtitle">Hola {profile?.name} 👋 — toca los ingredientes que tienes</p>
+        <button className="btn-header-icon btn-header-icon--left" onClick={onOpenHistory} title="Historial">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+        </button>
+        <button className="btn-header-icon btn-header-icon--right" onClick={onProfile} title="Mi Perfil">
+          ⚙️
+        </button>
       </header>
 
       <button
@@ -111,26 +128,47 @@ export default function PantrySelector({
         </div>
       </div>
 
-      {filteredCategories.map((cat) => (
-        <div key={cat.name} className="cat-section">
-          <h3 className="cat-title">{cat.icon} {cat.name}</h3>
-          <div className="ingredient-grid">
-            {cat.items.map((name) => {
-              const selected = pantry.includes(name);
-              return (
-                <button
-                  key={name}
-                  className={`grid-item ${selected ? "grid-item--on" : ""}`}
-                  onClick={() => toggleIngredient(name)}
+      {filteredCategories.map((cat) => {
+        const open = isCatOpen(cat.name);
+        const selectedCount = cat.items.filter((i) => pantry.includes(i)).length;
+        return (
+          <div key={cat.name} className="cat-section">
+            <button className="cat-title cat-title--btn" onClick={() => toggleCat(cat.name)}>
+              <span>{cat.icon} {cat.name}</span>
+              <span className="cat-title-right">
+                {!open && selectedCount > 0 && (
+                  <span className="cat-count">{selectedCount}</span>
+                )}
+                <svg
+                  className={`cat-chevron${open ? " cat-chevron--open" : ""}`}
+                  width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
                 >
-                  <span className="grid-emoji">{getEmoji(name)}</span>
-                  <span>{name}</span>
-                </button>
-              );
-            })}
+                  <path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+                </svg>
+              </span>
+            </button>
+            {open && (
+              <div className="ingredient-grid">
+                {cat.items.map((name) => {
+                  const selected = pantry.includes(name);
+                  const isFav = favoriteIngredients.includes(name);
+                  return (
+                    <button
+                      key={name}
+                      className={`grid-item${selected ? " grid-item--on" : ""}${isFav ? " grid-item--fav" : ""}`}
+                      onClick={() => toggleIngredient(name)}
+                    >
+                      <span className="grid-emoji">{getEmoji(name)}</span>
+                      <span>{name}</span>
+                      {isFav && <span className="grid-fav-badge">⭐</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       {filteredCategories.length === 0 && (
         <p className="empty-msg">No se encontraron ingredientes</p>

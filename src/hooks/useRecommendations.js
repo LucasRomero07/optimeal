@@ -1,11 +1,12 @@
 import recipesDB from "../data/recipes";
 import { isAllowedByDiet } from "../data/diets";
 
-export function getMealRecommendations(pantry, maxCookTime = 0, userProfile = null) {
+export function getMealRecommendations(pantry, maxCookTime = 0, userProfile = null, favoriteIngredients = []) {
   const pantryLower = pantry.map((i) => i.toLowerCase().trim());
   const allergies = (userProfile?.allergies || []).map((a) => a.toLowerCase().trim());
   const dislikes = (userProfile?.dislikes || []).map((d) => d.toLowerCase().trim());
   const diet = userProfile?.diet || "omnivore";
+  const favoritesLower = (favoriteIngredients || []).map((i) => i.toLowerCase().trim());
 
   const scored = recipesDB
     .filter((recipe) => {
@@ -100,6 +101,14 @@ export function getMealRecommendations(pantry, maxCookTime = 0, userProfile = nu
 
       if (hasDislike) {
         score -= 5;
+      }
+
+      // Bonus for favorite ingredients
+      const recipeIngredientsLower = uniqueIngredients.map((i) => i.toLowerCase());
+      for (const fav of favoritesLower) {
+        if (recipeIngredientsLower.includes(fav)) {
+          score += 2;
+        }
       }
 
       let flags = [];
